@@ -43,6 +43,7 @@ const AdminDashboard = () => {
       >
         Logout
       </button>
+
       <h1 className="p-4 text-center font-bold">Daftar Buku</h1>
       {books.map((el, idx) => {
         return (

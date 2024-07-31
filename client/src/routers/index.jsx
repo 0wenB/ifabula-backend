@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     element: <Login />,
     loader: async () => {
       if (localStorage.getItem("token")) {
-        return redirect("/main");
+        return redirect("/main" || "/admin-dashboard");
       }
       return null;
     },
