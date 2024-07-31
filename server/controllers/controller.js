@@ -24,7 +24,7 @@ class Controller {
         email: user.email,
       };
       let access_token = signToken(payload);
-      res.status(200).json({ access_token });
+      res.status(200).json({ access_token, role: user.role });
     } catch (error) {
       res
         .status(error.status || 500)
@@ -34,7 +34,16 @@ class Controller {
   static async register(req, res) {
     try {
       const { email, password } = req.body;
-      const makeUser = await User.create({
+      const findUser = await User.findOne({
+        where: { email },
+      });
+      if (findUser) {
+        throw {
+          message: "Email already exists. Try another one!",
+          status: 400,
+        };
+      }
+      await User.create({
         email,
         password,
       });
@@ -78,7 +87,9 @@ class Controller {
   }
   static async findAllBooks(req, res, next) {
     try {
-      const books = await Book.findAll({});
+      const books = await Book.findAll({
+        include: [{ model: User, attributes: { exclude: ["password"] } }],
+      });
       res.status(200).json({
         message: "Successfully find all books",
         books,
@@ -117,6 +128,7 @@ class Controller {
       const { bookId } = req.params;
       const userId = req.loginInfo.userId;
       const book = await Book.findByPk(bookId);
+      // console.log(book, userId);
       if (!book) {
         throw { status: 404, message: "Book not found" };
       }
@@ -129,6 +141,21 @@ class Controller {
       );
       res.status(200).json({
         message: "Successfully Update Book Status",
+      });
+    } catch (error) {
+      res
+        .status(error.status || 500)
+        .json({ error: error.message || "Internal server error" });
+    }
+  }
+  static async userInfo(req, res, next) {
+    try {
+      const userInfo = await User.findOne({
+        attributes: { exclude: ["password"] },
+      });
+      res.status(200).json({
+        message: "Successfully get user info",
+        userInfo,
       });
     } catch (error) {
       res

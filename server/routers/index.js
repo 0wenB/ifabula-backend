@@ -12,6 +12,7 @@ router.get("/books", Controller.findAvailableBooks);
 router.get("/my-book", Controller.findMyBook);
 router.patch("/user-status", Controller.changeUserStatus);
 router.patch("/book-status/:bookId", Controller.changeBookStatus);
+router.get("/userInfo", Controller.userInfo);
 
 router.use(authorization);
 router.get("/all-books", Controller.findAllBooks);
