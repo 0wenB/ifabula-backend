@@ -25,10 +25,14 @@ const Login = () => {
         navigate("/main");
       }
     } catch (error) {
-      setError(error.message);
+      if (error.response?.data?.error) {
+        setError(error.response?.data?.error);
+      } else {
+        setError(error.message);
+      }
     }
   };
-  if (error) return <h1>{error}</h1>;
+  // if (error) return <h1>{error}</h1>;
   return (
     <>
       <div
@@ -47,6 +51,11 @@ const Login = () => {
           {/* {JSON.stringify(userInput)} */}
           <form onSubmit={onSubmit}>
             <div className="mb-4">
+              {error ? (
+                <h1 className="text-red-500 text-xs py-2">{error}</h1>
+              ) : (
+                ""
+              )}
               <label
                 htmlFor="email"
                 className="block text-gray-700 text-sm font-bold mb-2"
